@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       treks
 // @namespace  treks
-// @version    0.0.0
+// @version    0.0.2
 // @author     Anton
 // @match      https://*.treks.se/time
 // ==/UserScript==
@@ -19,13 +19,13 @@
     for (const comment of comments) {
       const hasContent = commentHasContent(comment);
       modifyIcon(comment, hasContent);
-      addEventListerns(comment);
+      addEventListeners(comment);
     }
   }
   function sleep(ms = 0) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
-  function addEventListerns(comment) {
+  function addEventListeners(comment) {
     comment.addEventListener("click", async () => {
       var _a, _b;
       const inputField = (_b = (_a = comment.parentElement) == null ? void 0 : _a.previousElementSibling) == null ? void 0 : _b.querySelector(
