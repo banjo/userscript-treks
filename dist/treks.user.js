@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       treks
 // @namespace  treks
-// @version    0.0.2
+// @version    0.0.3
 // @author     Anton
 // @match      https://*.treks.se/time
 // ==/UserScript==
@@ -12,6 +12,7 @@
     if (hasLoaded()) {
       clearInterval(startupInterval);
       main();
+      applyOnPeriodChange();
     }
   }, 50);
   function main() {
@@ -21,6 +22,16 @@
       modifyIcon(comment, hasContent);
       addEventListeners(comment);
     }
+  }
+  function applyOnPeriodChange() {
+    const periodButtons = Array.from(document.querySelectorAll(".btn-period"));
+    periodButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        setTimeout(() => {
+          main();
+        }, 1e3);
+      });
+    });
   }
   function sleep(ms = 0) {
     return new Promise((resolve) => setTimeout(resolve, ms));
