@@ -4,6 +4,7 @@ const startupInterval = setInterval(() => {
     if (hasLoaded()) {
         clearInterval(startupInterval);
         main();
+        applyOnPeriodChange();
     }
 }, 50);
 
@@ -15,6 +16,17 @@ function main() {
         modifyIcon(comment, hasContent);
         addEventListeners(comment);
     }
+}
+
+function applyOnPeriodChange() {
+    const periodButtons = Array.from(document.querySelectorAll(".btn-period"));
+    periodButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            setTimeout(() => {
+                main();
+            }, 1000);
+        });
+    });
 }
 
 function sleep(ms: number = 0) {
