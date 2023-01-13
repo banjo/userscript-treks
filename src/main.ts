@@ -13,7 +13,7 @@ function main() {
     for (const comment of comments) {
         const hasContent = commentHasContent(comment);
         modifyIcon(comment, hasContent);
-        addEventListerns(comment);
+        addEventListeners(comment);
     }
 }
 
@@ -21,7 +21,7 @@ function sleep(ms: number = 0) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function addEventListerns(comment: HTMLElement) {
+function addEventListeners(comment: HTMLElement) {
     comment.addEventListener("click", async () => {
         const inputField =
             comment.parentElement?.previousElementSibling?.querySelector(
