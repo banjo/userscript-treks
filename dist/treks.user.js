@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       treks
 // @namespace  treks
-// @version    0.0.3
+// @version    0.0.5
 // @author     Anton
 // @match      https://*.treks.se/time
 // ==/UserScript==
