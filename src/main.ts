@@ -1,13 +1,14 @@
 // @ts-ignore isolatedModules
-
-import { commentHandler } from "./features/comment";
-import { fillWeekHandler } from "./features/fillWeek";
+import { featureService } from "./features";
 import { hasLoaded } from "./utils/baseUtils";
+import "./features/fillWeek";
+import "./features/comment";
+import { initApplicator } from "./apply";
 
 const startupInterval = setInterval(() => {
     if (hasLoaded()) {
         clearInterval(startupInterval);
-        commentHandler();
-        fillWeekHandler();
+        featureService.init();
+        initApplicator();
     }
 }, 50);

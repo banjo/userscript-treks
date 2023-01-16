@@ -1,15 +1,19 @@
 // @ts-ignore isolatedModules
-
+import { featureService } from "./../features";
 import { isPeriodOpen, sleep, waitForSave } from "../utils/baseUtils";
+
+featureService.add({
+    name: "comment",
+    init: commentHandler,
+    options: {
+        states: ["open"],
+    },
+});
 
 export function commentHandler() {
     if (!isPeriodOpen()) {
         return;
     }
-
-    applyOnInputFieldChange();
-    applyOnPeriodChange();
-    applyOnOpenStateChange();
 
     const comments = getAllComments();
 
@@ -18,43 +22,6 @@ export function commentHandler() {
         modifyIcon(comment, hasContent);
         addEventListeners(comment);
     }
-}
-
-function applyOnOpenStateChange() {
-    const openStateButton = document.querySelector("#lockButton");
-    if (openStateButton instanceof HTMLButtonElement) {
-        openStateButton.addEventListener("click", () => {
-            if (!isPeriodOpen()) {
-                setTimeout(() => {
-                    commentHandler();
-                }, 1000);
-            }
-        });
-    }
-}
-
-function applyOnPeriodChange() {
-    const periodButtons = Array.from(document.querySelectorAll(".btn-period"));
-    periodButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-            setTimeout(() => {
-                commentHandler();
-            }, 1000);
-        });
-    });
-}
-
-function applyOnInputFieldChange() {
-    const inputField = Array.from(document.querySelectorAll("input.time"));
-
-    inputField.forEach((input) => {
-        if (input instanceof HTMLInputElement) {
-            input.addEventListener("keyup", async () => {
-                await waitForSave();
-                commentHandler();
-            });
-        }
-    });
 }
 
 function addEventListeners(comment: HTMLElement) {

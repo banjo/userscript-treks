@@ -1,6 +1,15 @@
+import { featureService } from "./../features";
 // @ts-ignore isolatedModules
 
-export function fillWeekHandler() {
+featureService.add({
+    name: "fillWeek",
+    init: fillWeekHandler,
+    options: {
+        states: ["open"],
+    },
+});
+
+function fillWeekHandler() {
     const currentButtons = getAllHamsterTime();
 
     for (const button of currentButtons) {
