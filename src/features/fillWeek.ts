@@ -1,14 +1,22 @@
 // @ts-ignore isolatedModules
 
 export function fillWeekHandler() {
-    const currentButton = document.querySelector(".show-shortcuts");
-    if (!currentButton) return;
+    const currentButtons = getAllHamsterTime();
 
-    const container = currentButton.parentElement;
-    if (!container) return;
+    for (const button of currentButtons) {
+        const container = button.parentElement;
+        if (!container) return;
 
-    const button = createButton("Fyll vecka", "fa-calendar-check-o");
-    container.appendChild(button);
+        container.style.display = "flex";
+        container.style.gap = "5px";
+
+        const newButton = createButton("", "fa-calendar-check-o");
+        container.appendChild(newButton);
+    }
+}
+
+function getAllHamsterTime() {
+    return Array.from(document.querySelectorAll("button.btn.hamstertime"));
 }
 
 function createButton(title: string, faIcon: string) {
