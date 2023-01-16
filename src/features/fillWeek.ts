@@ -12,16 +12,34 @@ export function fillWeekHandler() {
 
         const newButton = createButton("", "fa-calendar-check-o");
         container.appendChild(newButton);
+
+        const projectId = button.getAttribute("data-projectid");
+
+        const input = getFirstInputWithProjectId(projectId);
+        if (!input) return;
+
+        newButton.addEventListener("click", () => {
+            const keyboardEvent = new KeyboardEvent("keydown", {
+                key: "F",
+                shiftKey: true,
+                bubbles: true,
+            });
+            input.dispatchEvent(keyboardEvent);
+        });
     }
+}
+
+function getFirstInputWithProjectId(projectId: string | null) {
+    return document.querySelector(`input[data-projectid="${projectId}"]`);
 }
 
 function getAllHamsterTime() {
     return Array.from(document.querySelectorAll("button.btn.hamstertime"));
 }
 
-function createButton(title: string, faIcon: string) {
+function createButton(title: string, faIcon: string): HTMLButtonElement {
     const div = document.createElement("button");
     div.innerHTML = `<button class="btn"><i class="fa ${faIcon}"></i> ${title}</button>`;
 
-    return div.firstElementChild as HTMLElement;
+    return div.firstElementChild as HTMLButtonElement;
 }
