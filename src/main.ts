@@ -1,6 +1,7 @@
 // @ts-ignore isolatedModules
 
 import { commentHandler } from "./features/comment";
+import { hasLoaded } from "./utils/baseUtils";
 
 const startupInterval = setInterval(() => {
     if (hasLoaded()) {
@@ -8,7 +9,3 @@ const startupInterval = setInterval(() => {
         commentHandler();
     }
 }, 50);
-
-function hasLoaded() {
-    return document.querySelector(".commentIcon") !== null;
-}

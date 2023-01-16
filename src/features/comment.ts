@@ -1,5 +1,7 @@
 // @ts-ignore isolatedModules
 
+import { isPeriodOpen, sleep, waitForSave } from "../utils/baseUtils";
+
 export function commentHandler() {
     if (!isPeriodOpen()) {
         return;
@@ -55,25 +57,6 @@ function applyOnInputFieldChange() {
     });
 }
 
-function sleep(ms: number = 0) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function isPeriodOpen() {
-    return document.querySelector("#lockButton")?.innerHTML.includes("Öppen");
-}
-
-function waitForSave(interval: number = 750) {
-    return new Promise<void>((resolve) => {
-        const saveInterval = setInterval(() => {
-            if (hasBeenSaved()) {
-                resolve();
-                clearInterval(saveInterval);
-            }
-        }, interval);
-    });
-}
-
 function addEventListeners(comment: HTMLElement) {
     comment.addEventListener("click", async () => {
         const inputField =
@@ -103,13 +86,6 @@ function addEventListeners(comment: HTMLElement) {
             });
         }
     });
-}
-
-function hasBeenSaved() {
-    return (
-        document.querySelector(".saveStatus")?.innerHTML ===
-        "Alla ändringar sparade"
-    );
 }
 
 function modifyIcon(comment: HTMLElement, commentHasContent: boolean) {
