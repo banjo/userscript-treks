@@ -4,8 +4,6 @@ const startupInterval = setInterval(() => {
     if (hasLoaded()) {
         clearInterval(startupInterval);
         handler();
-        applyOnPeriodChange();
-        applyOnOpenStateChange();
     }
 }, 50);
 
@@ -15,6 +13,8 @@ function handler() {
     }
 
     applyOnInputFieldChange();
+    applyOnPeriodChange();
+    applyOnOpenStateChange();
 
     const comments = getAllComments();
 
