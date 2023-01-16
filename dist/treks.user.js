@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       treks
 // @namespace  treks
-// @version    0.0.6
+// @version    0.0.7
 // @author     Anton
 // @match      https://*.treks.se/time
 // ==/UserScript==
@@ -11,15 +11,16 @@
   const startupInterval = setInterval(() => {
     if (hasLoaded()) {
       clearInterval(startupInterval);
-      main();
+      handler();
       applyOnPeriodChange();
       applyOnOpenStateChange();
     }
   }, 50);
-  function main() {
+  function handler() {
     if (!isPeriodOpen()) {
       return;
     }
+    applyOnInputFieldChange();
     const comments = getAllComments();
     for (const comment of comments) {
       const hasContent = commentHasContent(comment);
@@ -33,7 +34,7 @@
       openStateButton.addEventListener("click", () => {
         if (!isPeriodOpen()) {
           setTimeout(() => {
-            main();
+            handler();
           }, 1e3);
         }
       });
@@ -44,9 +45,20 @@
     periodButtons.forEach((button) => {
       button.addEventListener("click", () => {
         setTimeout(() => {
-          main();
+          handler();
         }, 1e3);
       });
+    });
+  }
+  function applyOnInputFieldChange() {
+    const inputField = Array.from(document.querySelectorAll("input.time"));
+    inputField.forEach((input) => {
+      if (input instanceof HTMLInputElement) {
+        input.addEventListener("keyup", async () => {
+          await waitForSave();
+          handler();
+        });
+      }
     });
   }
   function sleep(ms = 0) {
@@ -55,6 +67,16 @@
   function isPeriodOpen() {
     var _a;
     return (_a = document.querySelector("#lockButton")) == null ? void 0 : _a.innerHTML.includes("Öppen");
+  }
+  function waitForSave(interval = 750) {
+    return new Promise((resolve) => {
+      const saveInterval = setInterval(() => {
+        if (hasBeenSaved()) {
+          resolve();
+          clearInterval(saveInterval);
+        }
+      }, interval);
+    });
   }
   function addEventListeners(comment) {
     comment.addEventListener("click", async () => {
@@ -73,13 +95,9 @@
       await sleep();
       const saveButton = document.querySelector("#notesave");
       if (saveButton instanceof HTMLButtonElement) {
-        saveButton.addEventListener("click", () => {
-          const saveInterval = setInterval(() => {
-            if (hasBeenSaved()) {
-              main();
-              clearInterval(saveInterval);
-            }
-          }, 750);
+        saveButton.addEventListener("click", async () => {
+          await waitForSave();
+          handler();
         });
       }
     });
