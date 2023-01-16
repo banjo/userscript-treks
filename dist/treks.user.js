@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       treks
 // @namespace  treks
-// @version    0.0.5
+// @version    0.0.6
 // @author     Anton
 // @match      https://*.treks.se/time
 // ==/UserScript==
@@ -13,14 +13,30 @@
       clearInterval(startupInterval);
       main();
       applyOnPeriodChange();
+      applyOnOpenStateChange();
     }
   }, 50);
   function main() {
+    if (!isPeriodOpen()) {
+      return;
+    }
     const comments = getAllComments();
     for (const comment of comments) {
       const hasContent = commentHasContent(comment);
       modifyIcon(comment, hasContent);
       addEventListeners(comment);
+    }
+  }
+  function applyOnOpenStateChange() {
+    const openStateButton = document.querySelector("#lockButton");
+    if (openStateButton instanceof HTMLButtonElement) {
+      openStateButton.addEventListener("click", () => {
+        if (!isPeriodOpen()) {
+          setTimeout(() => {
+            main();
+          }, 1e3);
+        }
+      });
     }
   }
   function applyOnPeriodChange() {
@@ -35,6 +51,10 @@
   }
   function sleep(ms = 0) {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+  function isPeriodOpen() {
+    var _a;
+    return (_a = document.querySelector("#lockButton")) == null ? void 0 : _a.innerHTML.includes("Öppen");
   }
   function addEventListeners(comment) {
     comment.addEventListener("click", async () => {
