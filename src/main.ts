@@ -3,13 +3,13 @@
 const startupInterval = setInterval(() => {
     if (hasLoaded()) {
         clearInterval(startupInterval);
-        main();
+        handler();
         applyOnPeriodChange();
         applyOnOpenStateChange();
     }
 }, 50);
 
-function main() {
+function handler() {
     if (!isPeriodOpen()) {
         return;
     }
@@ -31,7 +31,7 @@ function applyOnOpenStateChange() {
         openStateButton.addEventListener("click", () => {
             if (!isPeriodOpen()) {
                 setTimeout(() => {
-                    main();
+                    handler();
                 }, 1000);
             }
         });
@@ -43,7 +43,7 @@ function applyOnPeriodChange() {
     periodButtons.forEach((button) => {
         button.addEventListener("click", () => {
             setTimeout(() => {
-                main();
+                handler();
             }, 1000);
         });
     });
@@ -56,7 +56,7 @@ function applyOnInputFieldChange() {
         if (input instanceof HTMLInputElement) {
             input.addEventListener("keyup", async () => {
                 await waitForSave();
-                main();
+                handler();
             });
         }
     });
@@ -106,7 +106,7 @@ function addEventListeners(comment: HTMLElement) {
             saveButton.addEventListener("click", async () => {
                 // save will undo all changes, so redo them after the save.
                 await waitForSave();
-                main();
+                handler();
             });
         }
     });
