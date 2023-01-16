@@ -5,16 +5,34 @@ const startupInterval = setInterval(() => {
         clearInterval(startupInterval);
         main();
         applyOnPeriodChange();
+        applyOnOpenStateChange();
     }
 }, 50);
 
 function main() {
+    if (!isPeriodOpen()) {
+        return;
+    }
+
     const comments = getAllComments();
 
     for (const comment of comments) {
         const hasContent = commentHasContent(comment);
         modifyIcon(comment, hasContent);
         addEventListeners(comment);
+    }
+}
+
+function applyOnOpenStateChange() {
+    const openStateButton = document.querySelector("#lockButton");
+    if (openStateButton instanceof HTMLButtonElement) {
+        openStateButton.addEventListener("click", () => {
+            if (!isPeriodOpen()) {
+                setTimeout(() => {
+                    main();
+                }, 1000);
+            }
+        });
     }
 }
 
@@ -31,6 +49,10 @@ function applyOnPeriodChange() {
 
 function sleep(ms: number = 0) {
     return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isPeriodOpen() {
+    return document.querySelector("#lockButton")?.innerHTML.includes("Öppen");
 }
 
 function addEventListeners(comment: HTMLElement) {
