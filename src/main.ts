@@ -54,13 +54,9 @@ function applyOnInputFieldChange() {
 
     inputField.forEach((input) => {
         if (input instanceof HTMLInputElement) {
-            input.addEventListener("keyup", () => {
-                const saveInterval = setInterval(() => {
-                    if (hasBeenSaved()) {
-                        main();
-                        clearInterval(saveInterval);
-                    }
-                }, 750);
+            input.addEventListener("keyup", async () => {
+                await waitForSave();
+                main();
             });
         }
     });
@@ -72,6 +68,17 @@ function sleep(ms: number = 0) {
 
 function isPeriodOpen() {
     return document.querySelector("#lockButton")?.innerHTML.includes("Öppen");
+}
+
+function waitForSave(interval: number = 750) {
+    return new Promise<void>((resolve) => {
+        const saveInterval = setInterval(() => {
+            if (hasBeenSaved()) {
+                resolve();
+                clearInterval(saveInterval);
+            }
+        }, interval);
+    });
 }
 
 function addEventListeners(comment: HTMLElement) {
@@ -96,14 +103,10 @@ function addEventListeners(comment: HTMLElement) {
         const saveButton = document.querySelector("#notesave");
 
         if (saveButton instanceof HTMLButtonElement) {
-            saveButton.addEventListener("click", () => {
+            saveButton.addEventListener("click", async () => {
                 // save will undo all changes, so redo them after the save.
-                const saveInterval = setInterval(() => {
-                    if (hasBeenSaved()) {
-                        main();
-                        clearInterval(saveInterval);
-                    }
-                }, 750);
+                await waitForSave();
+                main();
             });
         }
     });
