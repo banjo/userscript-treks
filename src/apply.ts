@@ -19,12 +19,12 @@ function applyOnOpenStateChange() {
             features.forEach((feature) => {
                 if (feature.options?.states) {
                     if (
-                        isPeriodOpen() &&
+                        !isPeriodOpen() &&
                         feature.options.states.includes("open")
                     ) {
                         shouldInit = true;
                     } else if (
-                        !isPeriodOpen() &&
+                        isPeriodOpen() &&
                         feature.options.states.includes("locked")
                     ) {
                         shouldInit = true;
