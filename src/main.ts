@@ -14,6 +14,8 @@ function main() {
         return;
     }
 
+    applyOnInputFieldChange();
+
     const comments = getAllComments();
 
     for (const comment of comments) {
@@ -44,6 +46,23 @@ function applyOnPeriodChange() {
                 main();
             }, 1000);
         });
+    });
+}
+
+function applyOnInputFieldChange() {
+    const inputField = Array.from(document.querySelectorAll("input.time"));
+
+    inputField.forEach((input) => {
+        if (input instanceof HTMLInputElement) {
+            input.addEventListener("keyup", () => {
+                const saveInterval = setInterval(() => {
+                    if (hasBeenSaved()) {
+                        main();
+                        clearInterval(saveInterval);
+                    }
+                }, 750);
+            });
+        }
     });
 }
 
