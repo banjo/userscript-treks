@@ -10,6 +10,9 @@ featureService.add({
 });
 
 function fillWeekHandler() {
+    const alreadyCreated = checkIfAlreadyCreated();
+    if (alreadyCreated) return;
+
     const currentButtons = getAllHamsterTime();
 
     for (const button of currentButtons) {
@@ -46,9 +49,13 @@ function getAllHamsterTime() {
     return Array.from(document.querySelectorAll("button.btn.hamstertime"));
 }
 
+function checkIfAlreadyCreated() {
+    return document.querySelector("button[data-user-generated='true']");
+}
+
 function createButton(title: string, faIcon: string): HTMLButtonElement {
     const div = document.createElement("button");
-    div.innerHTML = `<button class="btn"><i class="fa ${faIcon}"></i> ${title}</button>`;
+    div.innerHTML = `<button class="btn" data-user-generated="true"><i class="fa ${faIcon}"></i> ${title}</button>`;
 
     return div.firstElementChild as HTMLButtonElement;
 }
