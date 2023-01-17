@@ -7,7 +7,7 @@
         "dev": "vite",
         "build": "tsc && vite build",
         "preview": "vite preview",
-        "release": "bumpp && pnpm run build && git commit -am 'chore: build updates'"
+        "release": "bumpp --execute 'pnpm run build'"
     },
     "devDependencies": {
         "@types/jquery": "^3.5.16",
