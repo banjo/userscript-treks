@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       treks
 // @namespace  treks
-// @version    0.0.10
+// @version    0.0.11
 // @author     Anton
 // @match      https://*.treks.se/time
 // ==/UserScript==
@@ -35,29 +35,15 @@
   function initApplicator() {
     applyOnInputFieldChange();
     applyOnPeriodChange();
-    applyOnOpenStateChange();
+    applyOnStateChange();
   }
-  function applyOnOpenStateChange() {
+  function applyOnStateChange() {
     const openStateButton = document.querySelector("#lockButton");
     if (openStateButton instanceof HTMLButtonElement) {
       openStateButton.addEventListener("click", () => {
-        const features2 = featureService.get();
-        let shouldInit = false;
-        features2.forEach((feature) => {
-          var _a;
-          if ((_a = feature.options) == null ? void 0 : _a.states) {
-            if (!isPeriodOpen() && feature.options.states.includes("open")) {
-              shouldInit = true;
-            } else if (isPeriodOpen() && feature.options.states.includes("locked")) {
-              shouldInit = true;
-            }
-          }
-        });
-        if (shouldInit) {
-          setTimeout(() => {
-            featureService.init();
-          }, 1e3);
-        }
+        setTimeout(() => {
+          featureService.init();
+        }, 1e3);
       });
     }
   }
@@ -82,11 +68,28 @@
       }
     });
   }
+  function shouldInitBasedOnPeriodState(feature) {
+    var _a;
+    let shouldInit = false;
+    if ((_a = feature.options) == null ? void 0 : _a.states) {
+      if (isPeriodOpen() && feature.options.states.includes("open")) {
+        shouldInit = true;
+      } else if (!isPeriodOpen() && feature.options.states.includes("locked")) {
+        shouldInit = true;
+      }
+    } else {
+      shouldInit = true;
+    }
+    return shouldInit;
+  }
   const features = [];
   const add = (feature) => features.push(feature);
   const get = () => features;
   const init = () => {
-    features.forEach((f) => f.init());
+    features.forEach((f) => {
+      if (shouldInitBasedOnPeriodState(f))
+        f.init();
+    });
     initApplicator();
   };
   const featureService = { add, get, init };
@@ -98,6 +101,9 @@
     }
   });
   function fillWeekHandler() {
+    const alreadyCreated = checkIfAlreadyCreated();
+    if (alreadyCreated)
+      return;
     const currentButtons = getAllHamsterTime();
     for (const button of currentButtons) {
       const container = button.parentElement;
@@ -127,9 +133,12 @@
   function getAllHamsterTime() {
     return Array.from(document.querySelectorAll("button.btn.hamstertime"));
   }
+  function checkIfAlreadyCreated() {
+    return document.querySelector("button[data-user-generated='true']");
+  }
   function createButton(title, faIcon) {
     const div = document.createElement("button");
-    div.innerHTML = `<button class="btn"><i class="fa ${faIcon}"></i> ${title}</button>`;
+    div.innerHTML = `<button class="btn" data-user-generated="true"><i class="fa ${faIcon}"></i> ${title}</button>`;
     return div.firstElementChild;
   }
   featureService.add({
