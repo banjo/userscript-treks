@@ -1,3 +1,4 @@
+import { waitForSave } from "../utils/baseUtils";
 import { featureService } from "./../features";
 // @ts-ignore isolatedModules
 
@@ -30,13 +31,15 @@ function fillWeekHandler() {
         const input = getFirstInputWithProjectId(projectId);
         if (!input) return;
 
-        newButton.addEventListener("click", () => {
+        newButton.addEventListener("click", async () => {
             const keyboardEvent = new KeyboardEvent("keydown", {
                 key: "F",
                 shiftKey: true,
                 bubbles: true,
             });
             input.dispatchEvent(keyboardEvent);
+            await waitForSave();
+            setTimeout(featureService.init, 1000);
         });
     }
 }
