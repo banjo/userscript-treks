@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       treks
 // @namespace  treks
-// @version    0.0.11
+// @version    0.0.12
 // @author     Anton
 // @match      https://*.treks.se/time
 // ==/UserScript==
@@ -117,13 +117,15 @@
       const input = getFirstInputWithProjectId(projectId);
       if (!input)
         return;
-      newButton.addEventListener("click", () => {
+      newButton.addEventListener("click", async () => {
         const keyboardEvent = new KeyboardEvent("keydown", {
           key: "F",
           shiftKey: true,
           bubbles: true
         });
         input.dispatchEvent(keyboardEvent);
+        await waitForSave();
+        setTimeout(featureService.init, 1e3);
       });
     }
   }
